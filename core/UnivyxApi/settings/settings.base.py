@@ -1,9 +1,9 @@
 
 import os
+import sys
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY','change-me-in-production')
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -27,9 +27,11 @@ INSTALLED_APPS = [
     #splitsettings is important
 
     #custom apps
-    'entertainment',
-    'academics',
+    'core.entertainment',
+    'core.academics',
+    'core.accounts'
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
