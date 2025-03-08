@@ -3,24 +3,32 @@ from django.db import models
 import math
 
 class NewsArticle(models.Model):
-    CATEGORY_CHOICES = [
-        ("technology", "Technology"),
-        ("business", "Business"),
-        ("sports", "Sports"),
-        ("entertainment", "Entertainment"),
-        ("health", "Health"),
-        ("politics", "Politics"),
-        ("science", "Science"),
-        ("world", "World"),
-        ("other", "Other"),
-    ]
+    # CATEGORY_CHOICES = [
+    #     ("technology", "Technology"),
+    #     ("business", "Business"),
+    #     ("sports", "Sports"),
+    #     ("entertainment", "Entertainment"),
+    #     ("health", "Health"),
+    #     ("politics", "Politics"),
+    #     ("science", "Science"),
+    #     ("world", "World"),
+    #     ("other", "Other"),
+    # ]
 
-    SECTION_CHOICES = [
-        ("featured", "Featured"),
-        ("trending", "Trending"),
-        ("latest", "Latest"),
-        ("opinion", "Opinion"),
-        ("editorial", "Editorial"),
+    # SECTION_CHOICES = [
+    #     ("featured", "Featured"),
+    #     ("trending", "Trending"),
+    #     ("latest", "Latest"),
+    #     ("opinion", "Opinion"),
+    #     ("editorial", "Editorial"),
+    # ]
+    CATEGORY_CHOICES = [
+        ('all','ALL'),
+        ('environment','Environment'),
+        ('campus','Campus'),
+        ('sports','Sports'),
+        ('academics','Academics'),
+        ('research','Research')
     ]
 
     title = models.CharField(max_length=255)
@@ -30,7 +38,7 @@ class NewsArticle(models.Model):
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     image_url = models.URLField()
     likes = models.PositiveIntegerField(default=0)
-    section = models.CharField(max_length=50, choices=SECTION_CHOICES)
+    # section = models.CharField(max_length=50, choices=SECTION_CHOICES)
     content = models.TextField(blank=True, null=True)
     read_time = models.PositiveIntegerField(default=1)  # Stored in DB
 
