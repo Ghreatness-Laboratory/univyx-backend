@@ -36,12 +36,18 @@ class articlesModel(models.Model):
 		200 words per min 
 		if read_time > 60m - read_time = in hours
 	    """
-		words = len(self.content.split()) if self.content else 0
-		calculated_time = f'{max(1, math.ceil(words / 200))} min' # if max(1, math.ceil(words / 200)) < 60 else f'{max(1, math.ceil(math.ceil(words / 200)/60))} hour' # Ensure at least 1 min
-		#recursion error
+		words_per_minute = 200  # Average reading speed
+		total_words = len(self.content.split())
+
+		read_time_minutes = total_words / words_per_minute
+		read_time_seconds = math.ceil(read_time_minutes * 60)  # Convert to seconds
+
+		if read_time_seconds < 60:
+		    return f"{read_time_seconds} sec"
+		else:
+		    return f"{math.ceil(read_time_minutes)} min"
 		# self.save(update_fields=["read_time"])
 
-		return calculated_time
 
 	def generate_excerpt(self):
 		return self.content[:100] + "..." if len(self.content) > 100 else self.content
@@ -53,11 +59,7 @@ class articlesModel(models.Model):
 		if not self.read_time:
 			# print('words')
 			self.calculate_read_time()
-		# elif self.read_time:
-		# 	print(dir(self.read_time))
-		# 	self.read_time = ''
-		# 	self.calculate_read_time()
-		return f"{self.read_time} min read"
+		return self.calculate_read_time()
 
 	def save(self, *args, **kwargs):
 		"""Automatically updates read time when content changes."""

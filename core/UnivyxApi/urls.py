@@ -21,3 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('univyxApi/v1/entertainment/',include('core.entertainment.urls')),
 ]
+
