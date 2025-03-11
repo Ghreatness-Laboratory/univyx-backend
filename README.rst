@@ -1,12 +1,74 @@
-===============================
-Univyx Api
-===============================
-
-Welcome to **Univyx API**! This project uses `Poetry <https://python-poetry.org/>;`_ for dependency management and packaging.
+======================================
+Univyx Backend - Django & Poetry Setup
+======================================
 
 .. contents:: Table of Contents
    :depth: 2
 
+Overview
+========
+Univyx Backend is a Django-based backend for handling academic and entertainment modules.
+It is structured using a **modularized architecture** and managed using **Poetry**.
+
+The applications follow a **hybrid structure**, combining both the **traditional Django structure** and a **service-repository pattern** for better scalability and maintainability.
+
+Additionally, the project uses **split settings**, allowing better configuration management by separating different settings files (e.g., `development.py`, `production.py`).
+
+Project Structure
+=================
+
+::
+
+    core/
+        __init__.py          # Marks core as a Python module
+        academics/           # Hybrid-structured app (Django + Service-Repository Pattern)
+            Repository/
+            Services/
+            models/
+                __init__.py
+                models.py
+            views/
+                __init__.py
+                views.py
+            __init__.py
+            apps.py
+            urls.py
+        entertainment/       # Hybrid-structured app
+            Repository/
+            Services/
+            models/
+                __init__.py
+                models.py
+                articles.py   # Article model
+                news.py       # News model
+                events.py     # Events model
+            views/
+                __init__.py
+                views.py
+            __init__.py
+            apps.py
+            urls.py
+        accounts/
+            models/
+                __init__.py
+                models.py
+            views/
+                __init__.py
+                views.py
+            __init__.py
+            apps.py
+            urls.py
+        univyxApi/
+            settings/        # Split settings implementation
+                __init__.py
+                base.py
+                development.py
+                production.py
+            __init__.py
+            wsgi.py
+            asgi.py
+            urls.py
+        manage.py            # Django's management script
 -------------------------------
 🚀 Getting Started
 -------------------------------
@@ -38,21 +100,39 @@ This will:
 - install all dependencies exactly as locked in **'poetry.lock'**, ensuring consistency.
 - Automatically create a virtual environment (unless Poetry is set to use the system interpreter).
 
--------------------------------
-🔧 Running the Project
--------------------------------
 
-Activate the Poetry environment and start using the project:
+Installation Guide
+==================
 
-.. code-block:: sh
+1. **Clone the Repository** (if using Git)::
 
-   poetry shell
+       git clone <your-repo-url>
+       cd univyx_backend
 
-To run the application:
+2. **Create a Virtual Environment (Recommended)**::
 
-.. code-block:: sh
+       poetry env use python
 
-   poetry run python manage.py runserver
+3. **Activate the Virtual Environment** (if needed)::
+
+       poetry shell
+
+4. **Install Dependencies**::
+
+       poetry install
+
+Running the Project
+===================
+
+After setting up, run the project using::
+
+    poetry run py -m core.manage runserver
+
+To specify a settings file, use::
+
+    poetry run py -m core.manage runserver --settings=univyxApi.settings.development
+
+
 
 *(Navigate to the UnivyxApi Folder first before running this.)*
 
