@@ -69,9 +69,9 @@ Project Structure
             asgi.py
             urls.py
         manage.py            # Django's management script
--------------------------------
-🚀 Getting Started
--------------------------------
+
+Getting Started
+===============
 
 To get started with this project, ensure you have `Poetry` installed. If you don't have Poetry, install it using:
 
@@ -89,74 +89,79 @@ After installing Poetry, set up the project dependencies by running:
 
 This will create a virtual environment and install all required dependencies.
 
-This project includes a **'poetry.lock'** file, ensuring that all dependencies are 
-installed exactly as specified.
+This project includes a **'poetry.lock'** file, ensuring that all dependencies are installed exactly as specified.
 
 To set up the project, simply run:
+
 .. code-block:: sh
-poetry install
+
+   poetry install
 
 This will:
-- install all dependencies exactly as locked in **'poetry.lock'**, ensuring consistency.
+- Install all dependencies exactly as locked in **'poetry.lock'**, ensuring consistency.
 - Automatically create a virtual environment (unless Poetry is set to use the system interpreter).
-
 
 Installation Guide
 ==================
 
-1. **Clone the Repository** (if using Git)::
+1. **Clone the Repository** (if using Git):
+
+   .. code-block:: sh
 
        git clone <your-repo-url>
        cd univyx_backend
 
-2. **Create a Virtual Environment (Recommended)**::
+2. **Create a Virtual Environment (Recommended):**
+
+   .. code-block:: sh
 
        poetry env use python
 
-3. **Activate the Virtual Environment** (if needed)::
+3. **Activate the Virtual Environment (if needed):**
+
+   .. code-block:: sh
 
        poetry shell
 
-4. **Install Dependencies**::
+4. **Install Dependencies:**
+
+   .. code-block:: sh
 
        poetry install
 
 Running the Project
 ===================
 
-After setting up, run the project using::
+After setting up, run the project using:
+
+.. code-block:: sh
 
     poetry run py -m core.manage runserver
 
-To specify a settings file, use::
+To specify a settings file, use:
+
+.. code-block:: sh
 
     poetry run py -m core.manage runserver --settings=univyxApi.settings.development
 
-
-
 *(Navigate to the UnivyxApi Folder first before running this.)*
 
-
-
-=================
-Required Packages 
+Required Packages
 =================
 
-To run this project, you need to install the following packages
+To run this project, you need to install the following packages:
 
-- asgiref               3.8.1  ASGI specs, helper code, and adapters
-- django                5.1.6  A high-level Python web framework that encourages rapid development and clean, pragmat...
-- django-cors-headers   4.7.0  django-cors-headers is a Django application for handling the server headers required f...
-- django-split-settings 1.3.2  Organize Django settings into multiple files and directories. Easily override and modi...
-- djangorestframework   3.15.2 Web APIs for Django, made easy.
-- dotenv                0.9.9  Deprecated package
-- python-dotenv         1.0.1  Read key-value pairs from a .env file and set them as environment - variables
-- sqlparse              0.5.3  A non-validating SQL parser.
-- tzdata
+- **asgiref** - ASGI specs, helper code, and adapters.
+- **django** - A high-level Python web framework that encourages rapid development.
+- **django-cors-headers** - Handles server headers required for Cross-Origin Resource Sharing (CORS).
+- **django-split-settings** - Organize Django settings into multiple files and directories.
+- **djangorestframework** - Web APIs for Django, made easy.
+- **python-dotenv** - Read key-value pairs from a `.env` file and set them as environment variables.
+- **sqlparse** - A non-validating SQL parser.
+- **tzdata** - Time zone data.
 
--------------------------------
-📦 Managing Dependencies
--------------------------------
+Managing Dependencies
+=====================
 
 To add a new dependency:
 
@@ -180,15 +185,10 @@ To update dependencies:
 
 .. code-block:: sh
 
-   poetry update
-
--------------------------------
-📜 License
--------------------------------
+   poetry
 
 
 
 
 
 
-This project is licensed under the MIT License - see the `LICENSE` file for details.
