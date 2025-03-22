@@ -8,8 +8,25 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY','change-me-in-production')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+]
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST'
+]
+
+CORS_ALLOW_HEADERS = [
+    'content-type',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 # Application definition
 

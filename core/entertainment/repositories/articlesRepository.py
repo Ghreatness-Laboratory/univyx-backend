@@ -6,13 +6,13 @@ from django.utils.timezone import now
 
 class ArticleRepository:
 	@staticmethod
-	def get_articles():
+	def getAllArticles():
 		articles = articlesModel.objects.all()
 		print(dir(articles))
 		return articles
 
 	@staticmethod
-	def create_article(title, content, category, image, user):
+	def createArticle(title, content, category, image, user):
 		"""Create a new article, setting all other fields internally."""
 		article = articlesModel(
 		    title=title,

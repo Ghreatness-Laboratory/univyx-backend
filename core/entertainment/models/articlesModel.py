@@ -7,21 +7,21 @@ import math
 class articlesModel(models.Model):
 	CATEGORY_CHOICES = [
         ('all','ALL'),
-        ('student','student'),
-        ('life','life'),
+        ('student','Student'),
+        ('life','Life'),
         ('campus life','Campus Life'),
         ('travel','Travel'),
         ('advice','Advice')
     ]
 	title = models.CharField(max_length=200)
-	excerpt = models.TextField(blank=True, null=True)
+	excerpt = models.TextField(blank=True, null=True,editable=False)
 	content = models.TextField()
-	author  = models.ForeignKey(User, on_delete=models.CASCADE)
-	date  = models.DateTimeField(auto_now_add=True)
+	author  = models.ForeignKey(User, on_delete=models.CASCADE, editable=False)
+	date  = models.DateTimeField(auto_now_add=True, editable=False)
 	category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
 	image  = models.ImageField(upload_to='uploads/article_img', null=True)
 	# read_time = models.PositiveIntegerField()  # Stored in DB
-	read_time = models.CharField(max_length=100, blank=True, editable=True)
+	read_time = models.CharField(max_length=100, blank=True, editable=False)
 	#num_of_likes  = models.PositiveIntegerField(default=0)
 	#num_of_comments = models.PositiveIntegerField(default=0)
 	# isBookmarked  
