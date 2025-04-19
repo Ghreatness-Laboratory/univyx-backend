@@ -1,5 +1,5 @@
-from core.entertainment.repositories import eventsRepository
-from core.entertainment.serializers import eventsSerializer
+
+from entertainment.serializers import eventsSerializer
 
 
 
@@ -8,56 +8,23 @@ from core.entertainment.serializers import eventsSerializer
 from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 # from events.repositories.event_repository import EventRepository
-from events.models import Event
+from shared.services import BaseService
+# from shared.services.base_service import BaseService
+from entertainment.repositories import EventRepository
+from entertainment.models import Event
 
-class EventService:
 
-    @staticmethod
-    def validate_event_data(data):
-        start = data.get('start_time')
-        end = data.get('end_time')
-        is_recurring = data.get('is_recurring', False)
-        recurrence = data.get('recurrence_pattern')
-
-        if start and end and end <= start:
-            raise ValidationError("End time must be after start time.")
-        if is_recurring and not recurrence:
-            raise ValidationError("Recurring events must have a recurrence pattern.")
-        if not is_recurring:
-            data['recurrence_pattern'] = None
-        return data
+class EventService(BaseService):
+    repository_class = EventRepository
 
     @staticmethod
-    def create_event(data):
-        data = EventService.validate_event_data(data)
-        if not data.get('slug'):
-            data['slug'] = slugify(data['title'])
-        return EventRepository.create(**data)
+    def validate_and_create_event(data):
+        if data["end_time"] and data["start_time"] >= data["end_time"]:
+            raise ValueError("End time must be after start time.")
+        if data.get("is_recurring") and not data.get("recurrence_pattern"):
+            raise ValueError("Recurring events need a recurrence pattern.")
 
-    @staticmethod
-    def update_event(event: Event, data):
-        data = EventService.validate_event_data(data)
-        if 'title' in data:
-            data['slug'] = slugify(data['title'])
-        return EventRepository.update(event, **data)
-
-    @staticmethod
-    def delete_event(event: Event):
-        return EventRepository.delete(event)
-
-    @staticmethod
-    def get_event_by_id(event_id: int):
-        return EventRepository.get_by_id(event_id)
-
-    @staticmethod
-    def get_event_by_slug(slug: str):
-        return EventRepository.get_by_slug(slug)
-
-    @staticmethod
-    def list_events():
-        return EventRepository.all()
-
-
+        return EventService.create(**data)
 
 
 

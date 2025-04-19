@@ -2,11 +2,15 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
-
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / "core"))
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.UnivyxApi.settings')
+# Add entertainment to path so `shared` can be imported globally
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'core', 'entertainment'))
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

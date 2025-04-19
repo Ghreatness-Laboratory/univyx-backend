@@ -1,9 +1,12 @@
 from rest_framework import serializers
-from core.entertainment.models import Event
-from core.entertainment.services import EventService
+from entertainment.models import Event
+from entertainment.services import EventService
 from django.utils.text import slugify
 
 class EventSerializer(serializers.ModelSerializer):
+    
+    # author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     time_range = serializers.ReadOnlyField()
     slug = serializers.ReadOnlyField()
     date_created = serializers.ReadOnlyField()
@@ -13,8 +16,7 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = [
             'id', 'title', 'slug', 'date',
-            'start_time', 'end_time', 'time_range',
-            'timezone', 'location', 'description',
+            'start_time', 'end_time', 'time_range', 'location', 'description',
             'image', 'is_recurring', 'recurrence_pattern',
             'date_created'
         ]
@@ -35,6 +37,9 @@ class EventSerializer(serializers.ModelSerializer):
             fields['is_recurring'].read_only = True
             fields['recurrence_pattern'].read_only = True
         return fields
+
+
+
 
 
 

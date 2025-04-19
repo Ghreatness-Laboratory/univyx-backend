@@ -1,5 +1,5 @@
 from django import forms 
-from core.entertainment.models import articlesModel
+from entertainment.models import articlesModel
 
 class myForm(forms.ModelForm):
 	class Meta:
