@@ -57,11 +57,18 @@ Project Structure
                 serializers.py
                 utils.py
             Repository/
+                __init__.py
+                base_repository.py
+                base_toggle_repository.py
             Services/
+                __init__.py
+                base_service.py
             utils/
+                __init__.py
+                file_uploads.py
             views/
                 __init__.py
-                views.py
+                base_view.py
             __init__.py
             apps.py
             consumers.py   #not implemented
@@ -165,6 +172,7 @@ To specify a settings file, use:
 
 *(Navigate to the UnivyxApi Folder first before running this.)*
 
+<<<<<<< HEAD
 🚀 Development Quickstart
 --------------------------
 
@@ -202,6 +210,8 @@ dev.bat migrate
 4. Otherwise, forwards commands to `poetry run py -m core.manage`.
 
 
+=======
+>>>>>>> cba64a38e69c66e21fa3459c12e863e89f1c6b53
 Required Packages
 =================
 
