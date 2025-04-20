@@ -47,7 +47,33 @@ Project Structure
                 views.py
             __init__.py
             apps.py
-            urls.py
+            urls.py 
+        shared/       # Hybrid-structured app
+            Engagements/
+                repository/
+                services/
+                views/
+                __init__.py
+                serializers.py
+                utils.py
+            Repository/
+                __init__.py
+                base_repository.py
+                base_toggle_repository.py
+            Services/
+                __init__.py
+                base_service.py
+            utils/
+                __init__.py
+                file_uploads.py
+            views/
+                __init__.py
+                base_view.py
+            __init__.py
+            apps.py
+            consumers.py   #not implemented
+            models.py      # Contains Abstract classes 
+            permissions.py   # not implemented
         accounts/
             models/
                 __init__.py
@@ -146,6 +172,46 @@ To specify a settings file, use:
 
 *(Navigate to the UnivyxApi Folder first before running this.)*
 
+<<<<<<< HEAD
+🚀 Development Quickstart
+--------------------------
+
+### Running Django Commands Easily
+
+We use a custom `dev.bat` script to streamline local development.
+
+**Features of `dev.bat`:**
+- ✅ Automatically kills any running Django `runserver` processes.
+- ✅ Activates the virtual environment (`venv\Scripts\activate.bat`).
+- ✅ Handles app creation:
+  - Running `dev.bat startapp app_name` automatically creates the app inside the `core/` directory.
+- ✅ Executes any other manage.py commands via Poetry.
+
+**Usage Examples:**
+
+```bash
+# Start the server
+dev.bat runserver
+
+# Create a new Django app inside core/
+dev.bat startapp blog
+
+# Make migrations
+dev.bat makemigrations
+
+# Apply migrations
+dev.bat migrate
+```
+
+**How It Works Internally:**
+1. Checks and kills any running Django dev servers.
+2. Activates the virtual environment.
+3. If `startapp` is passed, creates the app inside `core/`.
+4. Otherwise, forwards commands to `poetry run py -m core.manage`.
+
+
+=======
+>>>>>>> cba64a38e69c66e21fa3459c12e863e89f1c6b53
 Required Packages
 =================
 
@@ -189,6 +255,199 @@ To update dependencies:
 
 
 
+Model Architecture
+==================
+
+Overview
+--------
+Univyx follows a hybrid model architecture combining:
+
+- Traditional Django app layout
+- Service and Repository layers
+- Functional model files split by purpose
+
+Model File Structure
+--------------------
+
++----------------------+---------------------+
+| File                 | Models              |
++======================+=====================+
+| articles.py          | Article             |
+| news.py              | News                |
+| events.py            | Event               |
+| shared/              | Comment, Bookmark   |
+|                      | Like, View etc      |
++----------------------+---------------------+
+
+How Models Interact
+--------------------
+
+- Views → Services → Repositories → Models
+- Models expose data; services encapsulate business logic
+- Repositories perform CRUD with Django ORM
+
+Lifecycle Flow
+--------------
+
+::
+
+   User Request
+      ↓
+   [APIView]
+      → [Service Layer]
+          → [Repository]
+              → [Model]
+
+Adding New Models
+-----------------
+
+1. Create `models/my_new_model.py`
+2. Inherit from `ContentBaseModel` or `models.Model`
+3. Set `Meta.app_label = "<your_app>"` if needed
+4. Register in `models/__init__.py`
+5. Add Service, Repository, APIView, and Serializer
+
+Why GenericRelation?
+~~~~~~~~~~~~~~~~~~~~
+Allows models to link flexibly to any other model without defining static `ForeignKey` fields.
+
+Example:
+
+.. code-block:: python
+
+   class Article(ContentBaseModel):
+       comments = GenericRelation(Comment)
+       bookmarks = GenericRelation(Bookmark)
+
+   article.comments.all()
+   article.bookmarks.count()
+
+
+🛠 Shared App Structure
+--------------------------
+
+A new `shared` app centralizes reusable code and core features.
+
+**Inside `shared/engagements/`:**
+- Like functionality
+- Bookmark functionality
+- Comment functionality
+- View functionality (**work in progress**)
+
+🧩 How `models.py` in `shared` Works
+---------------------------------------
+
+| Model | Purpose |
+|---|---|
+| `BaseTimestampModel` | Adds `UUID id`, `public_id`, `slug`, and `date_created` automatically. |
+| `ReadableContentModel` | Calculates `read_time` and generates `excerpt` from content. |
+| `ContentBaseModel` | Combines timestamp and readable models for articles, posts, etc. |
+| `AbstractContentTypeCBLV` | Base for user-driven actions on any model (like, comment, bookmark, view) using the Django ContentType framework. |
+| `Comment`, `Bookmark`, `Like`, `View` | Implementations tied to any object dynamically via `GenericForeignKey`. |
+
+Shared Abstract Base Models
+---------------------------
+
+Located in `shared/models.py`.
+
+**BaseTimestampModel**
+
+- Fields: `id (UUID)`, `slug`, `date_created`
+
+**ReadableContentModel**
+
+- Fields: `content`, `read_time`, `excerpt`
+- Methods: `calculate_read_time()`, `generate_excerpt()`
+
+**ContentBaseModel**
+
+- Combines `BaseTimestampModel` + `ReadableContentModel`
+- Fields: `title`, `image`, `category`
+
+Shared Utilities
+----------------
+
+**Base64ImageField** (`shared/utils/fields.py`)
+
+Custom DRF field to handle Base64-encoded images (used in SPA/mobile apps).
+
+.. code-block:: python
+
+   class Base64ImageField(serializers.ImageField):
+       def to_internal_value(self, data):
+           if isinstance(data, str) and data.startswith('data:image'):
+               format, imgstr = data.split(';base64,')
+               ext = format.split('/')[-1]
+               data = ContentFile(base64.b64decode(imgstr), name='upload.' + ext)
+           return super().to_internal_value(data)
+
+Usage:
+
+.. code-block:: python
+
+   class ArticleSerializer(serializers.ModelSerializer):
+       image = Base64ImageField()
+
+       class Meta:
+           model = Article
+           fields = '__all__'
+           
+
+🛠 Core Backend Structure (Repositories, Services, Views)
+-----------------------------------------------------------
+
+### 📦 Repositories
+
+Repositories abstract and encapsulate database access logic.
+
+**Why use it?**    
+- Keeps database queries in one place.
+- Easier to mock during tests.
+- Reduces duplication across services.
+
+| Repository | Purpose |
+|---|---|
+| `BaseRepository` | Basic CRUD operations (`get_all`, `get_by_id`, `create`, `update`, `delete`). |
+| `BaseToggleRepository` | Special logic for toggle actions (like/bookmark/view) tied to a user and a generic object using ContentType. |
+
+### 🛠 Services
+
+Services contain business logic and use repositories under the hood.
+
+**Why use it?**  
+- Keeps views extremely thin.
+- Business rules and database access are separated.
+- Makes scaling and refactoring easier.
+
+| Service | Purpose |
+|---|---|
+| `BaseService` | Generic service layer supporting `list`, `retrieve`, `create`, `update`, and `delete` operations by interacting with repositories. |
+
+### 🖥 Views
+
+Views only coordinate requests and responses — no business logic inside.
+
+| View | Purpose |
+|---|---|
+| `BaseContentAPIView` | An abstract DRF `APIView` for generic GET, POST, PUT, DELETE operations. It uses a `service_class`, `model_class`, and `serializer_class` that you specify in each concrete view. |
+
+**How BaseContentAPIView Works:**
+- **GET**:
+  - With `pk`: retrieve a single object.
+  - Without `pk`: list all objects.
+- **POST**: create an object.
+- **PUT**: update an object.
+- **DELETE**: delete an object.
+
+🧠 Why This Architecture?
+--------------------------
+
+| Benefit | Description |
+|---|---|
+| Separation of Concerns | Views, services, repositories each do one job. |
+| Easier Testing | You can unit test services and repositories without touching the views. |
+| Scalable and Maintainable | Adding new features or changing database structure won't require touching everything. |
+| Clean Code | Easier for any developer to pick up the project later. |
 
 
 
