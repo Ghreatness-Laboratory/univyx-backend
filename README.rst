@@ -47,7 +47,26 @@ Project Structure
                 views.py
             __init__.py
             apps.py
-            urls.py
+            urls.py 
+        shared/       # Hybrid-structured app
+            Engagements/
+                repository/
+                services/
+                views/
+                __init__.py
+                serializers.py
+                utils.py
+            Repository/
+            Services/
+            utils/
+            views/
+                __init__.py
+                views.py
+            __init__.py
+            apps.py
+            consumers.py   #not implemented
+            models.py      # Contains Abstract classes 
+            permissions.py   # not implemented
         accounts/
             models/
                 __init__.py
