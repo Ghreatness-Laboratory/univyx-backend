@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation
+
 import uuid
 import math
 
@@ -62,6 +64,57 @@ class ReadableContentModel(models.Model):
         super().save(*args, **kwargs)
 
 
+
+
+class Event(BaseTimestampModel):
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=200)
+    date = models.DateField(null=True, blank=True)
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
+    location = models.CharField(max_length=250)
+    description = models.TextField()
+    image = models.ImageField(upload_to=f'uploads/events/{self.__class__}')
+    is_recurring = models.BooleanField(default=False)
+    recurrence_pattern = models.CharField(
+        max_length=20,
+        choices=[
+            ('daily', 'Daily'),
+            ('weekly', 'Weekly'),
+            ('monthly', 'Monthly'),
+            ('yearly', 'Yearly')
+        ],
+        blank=True,
+        null=True
+    )
+
+    def clean(self):
+        if self.start_time and self.end_time and self.end_time <= self.start_time:
+            raise ValidationError("End time must be after start time.")
+        if self.is_recurring and not self.recurrence_pattern:
+            raise ValidationError("Please select a recurrence pattern for recurring events.")
+        if not self.is_recurring:
+            self.recurrence_pattern = None
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def time_range(self):
+        if self.start_time and self.end_time:
+            return f"{self.start_time.strftime('%I:%M%p').lower()} - {self.end_time.strftime('%I:%M%p').lower()}"
+        elif self.start_time:
+            return self.start_time.strftime('%I:%M%p').lower()
+        return ""
+
+    class Meta:
+        abstract=True
+        ordering = ['-date_created']
+
+
+
+
+
 class ContentBaseModel(BaseTimestampModel, ReadableContentModel):
     title = models.CharField(max_length=255)
     image = models.ImageField(upload_to='uploads/', null=True)
@@ -72,6 +125,13 @@ class ContentBaseModel(BaseTimestampModel, ReadableContentModel):
 
     def __str__(self):
         return self.title
+
+class ImgAbs(models.Model):
+    upload_to= None
+    image = models.ImageField(upload_to=upload_to, null=True)
+
+    class Meta:
+        abstract = True
 
 
 # ------------------ GENERIC RELATIONAL MODELS ------------------ #
@@ -99,10 +159,6 @@ class AbstractContentTypeCBLV(models.Model):
         unique_together = ('user', 'content_type', 'object_id')
 
 
-class Comment(AbstractContentTypeCBLV):
-    content = models.TextField()
-    def __str__(self):
-        return f"{self.user} on {self.content_object}"
 
 class Bookmark(AbstractContentTypeCBLV):
     def __str__(self):
@@ -111,6 +167,13 @@ class Bookmark(AbstractContentTypeCBLV):
 class Like(AbstractContentTypeCBLV):
     def __str__(self):
         return f"{self.user} liked {self.content_object}"
+
+class Comment(AbstractContentTypeCBLV):
+    allow_likes = True
+    content = models.TextField()
+    likes = GenericRelation(Like)
+    def __str__(self):
+        return f"{self.user} on {self.content_object}"
 
 class View(AbstractContentTypeCBLV):
     def __str__(self):

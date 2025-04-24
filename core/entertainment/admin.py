@@ -1,12 +1,12 @@
 from django.contrib.contenttypes.admin import GenericTabularInline
 from shared.models import Comment
 from django.contrib import admin
-from .models import Article,News,Event
+from .models import Article,News,entertainmentEventModel
 # Register your models here.
 
 
 
-@admin.register(Event)
+@admin.register(entertainmentEventModel)
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'date', 'time_range', 'location', 'is_recurring', 'recurrence_pattern')
     list_filter = ('date', 'is_recurring', 'recurrence_pattern')

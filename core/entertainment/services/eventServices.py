@@ -10,12 +10,12 @@ from rest_framework.exceptions import ValidationError
 # from events.repositories.event_repository import EventRepository
 from shared.services import BaseService
 # from shared.services.base_service import BaseService
-from entertainment.repositories import EventRepository
+from entertainment.repositories import entertainmentEventRepository
 from entertainment.models import Event
 
 
-class EventService(BaseService):
-    repository_class = EventRepository
+class entertainmentEventService(BaseService):
+    repository_class = entertainmentEventRepository
 
     @staticmethod
     def validate_and_create_event(data):
@@ -24,7 +24,7 @@ class EventService(BaseService):
         if data.get("is_recurring") and not data.get("recurrence_pattern"):
             raise ValueError("Recurring events need a recurrence pattern.")
 
-        return EventService.create(**data)
+        return entertainmentEventService.create(**data)
 
 
 
