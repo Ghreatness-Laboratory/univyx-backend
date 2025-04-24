@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
-from shared.models import ContentBaseModel, Comment, Bookmark, Like, View
+from shared.models import ContentBaseModel, Comment, Bookmark, Like, View, BaseTimestampModel
 User = get_user_model()
 
 
@@ -73,3 +73,21 @@ class Article(ContentBaseModel):
 
     def __str__(self):
         return self.title
+
+
+class HotTopics(BaseTimestampModel):
+    title = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='uploads/HotTopics/', null=True)
+    category = models.CharField(max_length=50)
+    allow_comments = True
+    discussions = GenericRelation(Comment)
+
+    class Meta:
+        app_label = 'entertainment'
+        ordering = ['-date_created']
+
+
+    @property
+    def total_discussions(self):
+        return self.discussions.count()
+

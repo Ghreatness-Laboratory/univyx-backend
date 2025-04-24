@@ -20,8 +20,9 @@ urlpatterns = [
     path("articles/<int:pk>/", ArticleAPIView.as_view(), name="article-detail"),
     path("news/", news_view, name="article-list"),
     path("events/", event_view, name="article-list"),
-
+    
     path('<str:model_name>/<int:public_id>/comments/', CommentAPIView.as_view()),
+    # path('<str:model_name>/<int:public_id>/comments/', CommentAPIView.as_view()),
     # 🔹 Comments for an article
     path('<str:model_name>/<int:object_id>/like/', LikeAPIView.as_view()),
     path('<str:model_name>/<int:public_id>/bookmark/', BookmarkAPIView.as_view()),

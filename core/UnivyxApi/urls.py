@@ -20,5 +20,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('univyxApi/v1/entertainment/',include('core.entertainment.urls')),
+    path('univyxApi/v1/academics/',include('core.academics.urls')),
+    path('univyxApi/v1/gaming/',include('core.gaming.urls')),
+    path('univyxApi/v1/store/',include('core.store.urls')),
 ]
 

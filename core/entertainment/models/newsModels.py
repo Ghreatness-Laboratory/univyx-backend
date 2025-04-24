@@ -30,3 +30,5 @@ class News(ContentBaseModel):
 
     class Meta:
         ordering = ['-date_created']
+        verbose_name = "News"
+        verbose_name_plural = "News"

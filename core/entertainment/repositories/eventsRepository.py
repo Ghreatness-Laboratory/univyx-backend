@@ -1,5 +1,5 @@
-from entertainment.models import Event
+from entertainment.models import entertainmentEventModel
 from shared.repositories import BaseRepository
 
-class EventRepository(BaseRepository):
-	model=Event 
+class entertainmentEventRepository(BaseRepository):
+	model=entertainmentEventModel 
